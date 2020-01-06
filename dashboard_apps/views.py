@@ -61,7 +61,7 @@ def webhook(request):
     event = request.META.get('HTTP_X_GITHUB_EVENT', 'ping')
     if event == 'ping':
         return log(request, 'pong')
-    elif event == 'push':
+    if event == 'push':
         return log(request, 'push event detected')
 
     return log(request, event)
