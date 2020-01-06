@@ -11,6 +11,7 @@ repository = "https://github.com/nim65s/dashboard-apps"
 [tool.poetry.dependencies]
 python = "^3.6"
 django = "^3"
+ndh = "^3.9.4"
 
 [tool.poetry.dev-dependencies]
 
