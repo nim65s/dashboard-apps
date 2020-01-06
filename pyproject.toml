@@ -22,6 +22,8 @@ yapf = "^0.29.0"
 toml = "^0.10.0"
 pre-commit = "^1.21.0"
 pydocstyle = "^5.0.1"
+mypy = "^0.761"
+django-stubs = "^1.4.0"
 
 [tool.isort]
 line_length = 119
