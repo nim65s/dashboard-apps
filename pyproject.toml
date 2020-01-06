@@ -4,6 +4,9 @@ version = "0.1.0"
 description = "github apps for https://github.com/gepetto/dashboard"
 authors = ["Guilhem Saurel <guilhem.saurel@laas.fr>"]
 license = "BSD-2-Clause"
+readme = "README.md"
+homepage = "https://dashboard-apps.saurel.me"
+repository = "https://github.com/nim65s/dashboard-apps"
 
 [tool.poetry.dependencies]
 python = "^3.6"
