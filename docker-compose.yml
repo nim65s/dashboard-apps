@@ -1,0 +1,47 @@
+version: '3'
+
+volumes:
+  srv:
+  sql:
+
+services:
+  postgres:
+    image: postgres:10-alpine
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - "sql:/var/lib/postgresql/data"
+  memcached:
+    image: memcached:alpine
+    restart: unless-stopped
+  app:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - "srv:/srv"
+    env_file:
+      - .env
+    environment:
+      - DB=postgres
+      - MEMCACHED=True
+    networks:
+      - web
+      - default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host: dashboard-apps.${DOMAIN_NAME:-localhost}"
+  nginx:
+    image: nim65s/ndh:nginx
+    restart: unless-stopped
+    volumes:
+      - "srv:/srv"
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host: dashboard-apps.${DOMAIN_NAME:-localhost}; PathPrefix: /static, /media"
+
+networks:
+  web:
+    external: true
