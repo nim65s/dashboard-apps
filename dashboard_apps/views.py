@@ -1,14 +1,18 @@
 """
 main views for dashboard_apps
 """
+import hmac
+from hashlib import sha1
 from ipaddress import ip_address, ip_network
 
 import requests
-from django.http.response import HttpResponse
+from django.conf import settings
+from django.http.response import (HttpResponse, HttpResponseForbidden, HttpResponseServerError)
+from django.utils.encoding import force_bytes
 from django.views.decorators.csrf import csrf_exempt
 
 
-def log(request):
+def log(request, rep='ok'):
     """
     just print everything out
     """
@@ -26,14 +30,17 @@ def log(request):
     print(f'{request.COOKIES = }')
     print(f'{request.META = }')
     print(f'{request.headers = }')
-    return HttpResponse('ok')
+    return HttpResponse(rep)
 
 
 @csrf_exempt
 def webhook(request):
     """
     got something from a github webhook
+    thx https://simpleisbetterthancomplex.com/tutorial/2016/10/31/how-to-handle-github-webhooks-using-django.html
     """
+
+    # validate ip source
     forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     networks = requests.get('https://api.github.com/meta').json()['hooks']
     if any(ip_address(forwarded_for) in ip_network(net) for net in networks):
@@ -41,4 +48,24 @@ def webhook(request):
     else:
         print('not from github IP')
 
-    return log(request)
+    # validate signature
+    signature = request.META.get('HTTP_X_HUB_SIGNATURE')
+    if signature is None:
+        print('no signature')
+    else:
+        algo, signature = signature.split('=')
+        if algo != 'sha1':
+            return HttpResponseServerError('I only speak sha1.', status=501)
+
+        mac = hmac.new(force_bytes(settings.GITHUB_WEBHOOK_KEY), msg=force_bytes(request.body), digestmod=sha1)
+        if not hmac.compare_digest(force_bytes(mac.hexdigest()), force_bytes(signature)):
+            return HttpResponseForbidden('wrong signature.')
+
+    # process event
+    event = request.META.get('HTTP_X_GITHUB_EVENT', 'ping')
+    if event == 'ping':
+        return log(request, 'pong')
+    elif event == 'push':
+        return log(request, 'push event detected')
+
+    return log(request, event)

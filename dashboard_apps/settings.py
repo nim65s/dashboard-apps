@@ -143,3 +143,5 @@ LOGGING = {
         },
     },
 }
+
+GITHUB_WEBHOOK_KEY = os.environ['GITHUB_WEBHOOK_KEY']
