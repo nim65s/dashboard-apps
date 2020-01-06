@@ -7,6 +7,7 @@ from ndh.utils import get_env
 
 
 def main():
+    """Load settings from environment and launch app."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard_apps.settings')
     get_env()
     try:

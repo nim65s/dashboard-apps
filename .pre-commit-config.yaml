@@ -22,6 +22,8 @@ repos:
     rev: 4.3.21
     hooks:
     -   id: isort
+        additional_dependencies:
+        -   toml
 -   repo: https://github.com/PyCQA/pydocstyle
     rev: 5.0.1
     hooks:

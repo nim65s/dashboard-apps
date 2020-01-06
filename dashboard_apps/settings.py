@@ -1,3 +1,4 @@
+"""Project configuration."""
 import os
 
 PROJECT = 'dashboard_apps'

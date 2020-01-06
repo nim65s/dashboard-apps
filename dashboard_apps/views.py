@@ -1,6 +1,4 @@
-"""
-main views for dashboard_apps
-"""
+"""Views for dashboard_apps."""
 import hmac
 from hashlib import sha1
 from ipaddress import ip_address, ip_network
@@ -13,9 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 def log(request, rep='ok'):
-    """
-    just print everything out
-    """
+    """Just print everything out."""
     print(f'{request = }')
     print(f'{request.scheme = }')
     print(f'{request.body = }')
@@ -36,10 +32,10 @@ def log(request, rep='ok'):
 @csrf_exempt
 def webhook(request):
     """
-    got something from a github webhook
+    Process request incoming from a github webhook.
+
     thx https://simpleisbetterthancomplex.com/tutorial/2016/10/31/how-to-handle-github-webhooks-using-django.html
     """
-
     # validate ip source
     forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     networks = requests.get('https://api.github.com/meta').json()['hooks']
