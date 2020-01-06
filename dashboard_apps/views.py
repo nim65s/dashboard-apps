@@ -5,12 +5,13 @@ from ipaddress import ip_address, ip_network
 
 import requests
 from django.conf import settings
+from django.http import HttpRequest
 from django.http.response import HttpResponse, HttpResponseForbidden, HttpResponseServerError
 from django.utils.encoding import force_bytes
 from django.views.decorators.csrf import csrf_exempt
 
 
-def log(request, rep='ok'):
+def log(request: HttpRequest, rep: str = 'ok') -> HttpResponse:
     """Just print everything out."""
     print(f'{request = }')
     print(f'{request.scheme = }')
@@ -30,7 +31,7 @@ def log(request, rep='ok'):
 
 
 @csrf_exempt
-def webhook(request):
+def webhook(request: HttpRequest) -> HttpResponse:
     """
     Process request incoming from a github webhook.
 
