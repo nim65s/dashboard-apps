@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 PROJECT = 'dashboard_apps'
 PROJECT_VERBOSE = PROJECT.replace('_', ' ').title()
