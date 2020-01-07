@@ -144,4 +144,7 @@ LOGGING = {
     },
 }
 
+GITHUB_APP_ID = os.environ['GITHUB_APP_ID']
 GITHUB_WEBHOOK_KEY = os.environ['GITHUB_WEBHOOK_KEY']
+with open(os.path.join(BASE_DIR, '.pem')) as pem:
+    GITHUB_PRIVATE_KEY = pem.read()

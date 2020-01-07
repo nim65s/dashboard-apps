@@ -13,6 +13,7 @@ python = "^3.6"
 django = "^3"
 ndh = "^3.9.4"
 requests = "^2.22.0"
+pyjwt = {extras = ["crypto"], version = "^1.7.1"}
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.11.1"
