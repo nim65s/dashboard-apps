@@ -3,30 +3,31 @@ import hmac
 from hashlib import sha1
 from ipaddress import ip_address, ip_network
 
-import requests
 from django.conf import settings
 from django.http import HttpRequest
 from django.http.response import HttpResponse, HttpResponseForbidden, HttpResponseServerError
 from django.utils.encoding import force_bytes
 from django.views.decorators.csrf import csrf_exempt
 
+import requests
+
 
 def log(request: HttpRequest, rep: str = 'ok') -> HttpResponse:
     """Just print everything out."""
-    print(f'{request = }')
-    print(f'{request.scheme = }')
-    print(f'{request.body = }')
-    print(f'{request.path = }')
-    print(f'{request.path_info = }')
-    print(f'{request.method = }')
-    print(f'{request.encoding = }')
-    print(f'{request.content_type = }')
-    print(f'{request.content_params = }')
-    print(f'{request.GET = }')
-    print(f'{request.POST = }')
-    print(f'{request.COOKIES = }')
-    print(f'{request.META = }')
-    print(f'{request.headers = }')
+    print(f'request = {request}')
+    print(f'request.scheme = {request.scheme}')
+    print(f'request.body = {request.body}')
+    print(f'request.path = {request.path}')
+    print(f'request.path_info = {request.path_info}')
+    print(f'request.method = {request.method}')
+    print(f'request.encoding = {request.encoding}')
+    print(f'request.content_type = {request.content_type}')
+    print(f'request.content_params = {request.content_params}')
+    print(f'request.GET = {request.GET}')
+    print(f'request.POST = {request.POST}')
+    print(f'request.COOKIES = {request.COOKIES}')
+    print(f'request.META = {request.META}')
+    print(f'request.headers = {request.headers}')
     return HttpResponse(rep)
 
 
