@@ -65,4 +65,4 @@ class GithubAPI(metaclass=Singleton):
 
     def post(self, path, data=None, json=None):
         """Perform an HTTP POST on the API."""
-        return requests.get('https://api.github.com' + path, data=data, json=json, headers=self._headers).json()
+        return requests.post('https://api.github.com' + path, data=data, json=json, headers=self._headers).json()
