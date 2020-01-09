@@ -1,21 +1,26 @@
-from time import time
+"""Django command to check the authentification on Github API as an installation."""
+import json
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
 
-import requests
-
-import jwt
+from dashboard_apps.utils import GithubAPI
 
 
 class Command(BaseCommand):
+    """Command definition."""
+
     help = 'test github auth as an installation of the app'
 
     def handle(self, *args, **options):
-        payload = {'iat': int(time()), 'exp': int(time()) + 600, 'iss': settings.GITHUB_APP_ID}
-        token = jwt.encode(payload, settings.GITHUB_PRIVATE_KEY, algorithm="RS256").decode()
-        headers = {'Authorization': f'Bearer {token}', 'Accept': 'application/vnd.github.machine-man-preview+json'}
-        url = 'https://api.github.com/app/installations/:installation_id/access_tokens'
-        ret = requests.post(url, headers=headers).json()
-        self.stdout.write(str(ret))
+        """Command entrypoint."""
+        path = '/app/installations/:installation_id/access_tokens'
+        payload = {
+            'repository_ids': [232098249],
+            'permissions': {
+                'checks': 'write',
+                'contents': 'read',
+            }
+        }
+        ret = GithubAPI().post(path, json=payload)
+        self.stdout.write(json.dumps(ret))
         self.stdout.write(f'"Authorization: token {ret["token"]}"')

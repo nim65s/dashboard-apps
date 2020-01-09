@@ -16,7 +16,7 @@ def log(request: HttpRequest, rep: str = 'ok') -> HttpResponse:
     """Just print everything out."""
     print(f'request = {request}')
     print(f'request.scheme = {request.scheme}')
-    print(f'request.body = {request.body}')
+    print(f'request.body = {request.body!s}')
     print(f'request.path = {request.path}')
     print(f'request.path_info = {request.path_info}')
     print(f'request.method = {request.method}')
