@@ -79,9 +79,11 @@ def webhook(request: HttpRequest) -> HttpResponse:
         print('push event detected')
         body = json.loads(request.body)
         if body['ref'] == 'refs/head/master':
-            print(' on the master branch')
+            print(' + on the master branch')
         elif body['ref'] == 'refs/head/devel':
-            print(' on the devel branch')
+            print(' + on the devel branch')
+        else:
+            print(' + ref:', body['ref'])
     else:
         print(f'*** event: {event}')
 
