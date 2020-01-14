@@ -30,10 +30,10 @@ def print_request(request: HttpRequest):
     print(f'request.headers = {request.headers}')
 
 
-def log(request: HttpRequest, rep: str = 'ok') -> HttpResponse:
+def log(request: HttpRequest) -> HttpResponse:
     """Log and return."""
     print_request(request)
-    return HttpResponse(rep)
+    return HttpResponse('ok')
 
 
 @csrf_exempt
@@ -73,8 +73,10 @@ def webhook(request: HttpRequest) -> HttpResponse:
     # process event
     event = request.META.get('HTTP_X_GITHUB_EVENT', 'ping')
     if event == 'ping':
-        return log(request, 'pong')
-    if event == 'push':
-        return log(request, 'push event detected')
+        print('pong')
+    elif event == 'push':
+        print('push event detected')
+    else:
+        print(f'*** event: {event}')
 
-    return log(request, event)
+    return log(request)
