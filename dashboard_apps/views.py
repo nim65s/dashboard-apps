@@ -98,9 +98,14 @@ def github_webhook(request: HttpRequest) -> HttpResponse:
             print(' - clone url', body['pull_request']['head']['repo']['clone_url'])
     elif event == 'check_suite':
         print('check suite detected')
-
-
     else:
         print(f'*** event: {event}')
+
+    return log(request)
+
+
+@csrf_exempt
+def gitlab_webhook(request: HttpRequest) -> HttpResponse:
+    """Process request incoming from a gitlab webhook."""
 
     return log(request)

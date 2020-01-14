@@ -149,3 +149,5 @@ GITHUB_INSTALLATION_ID = os.environ['GITHUB_INSTALLATION_ID']
 GITHUB_WEBHOOK_KEY = os.environ['GITHUB_WEBHOOK_KEY']
 with open(os.path.join(BASE_DIR, '.pem')) as pem:
     GITHUB_PRIVATE_KEY = pem.read()
+
+GITLAB_WEBHOOK_KEY = os.environ['GITLAB_WEBHOOK_KEY']
