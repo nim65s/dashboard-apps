@@ -38,7 +38,7 @@ def log(request: HttpRequest) -> HttpResponse:
 
 
 @csrf_exempt
-def webhook(request: HttpRequest) -> HttpResponse:
+def github_webhook(request: HttpRequest) -> HttpResponse:
     """
     Process request incoming from a github webhook.
 
@@ -96,6 +96,9 @@ def webhook(request: HttpRequest) -> HttpResponse:
             print(' - git url', body['pull_request']['head']['repo']['git_url'])
             print(' - ssh url', body['pull_request']['head']['repo']['ssh_url'])
             print(' - clone url', body['pull_request']['head']['repo']['clone_url'])
+    elif event == 'check_suite':
+        print('check suite detected')
+
 
     else:
         print(f'*** event: {event}')
