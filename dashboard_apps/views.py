@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 import requests
 
 
-def log(request: HttpRequest, rep: str = 'ok') -> HttpResponse:
+def print_request(request: HttpRequest):
     """Just print everything out."""
     print(f'request = {request}')
     print(f'request.scheme = {request.scheme}')
@@ -28,6 +28,11 @@ def log(request: HttpRequest, rep: str = 'ok') -> HttpResponse:
     print(f'request.COOKIES = {request.COOKIES}')
     print(f'request.META = {request.META}')
     print(f'request.headers = {request.headers}')
+
+
+def log(request: HttpRequest, rep: str = 'ok') -> HttpResponse:
+    """Log and return."""
+    print_request(request)
     return HttpResponse(rep)
 
 
@@ -41,23 +46,28 @@ def webhook(request: HttpRequest) -> HttpResponse:
     # validate ip source
     forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     networks = requests.get('https://api.github.com/meta').json()['hooks']
-    if any(ip_address(forwarded_for) in ip_network(net) for net in networks):
-        print('from github IP')
-    else:
-        print('not from github IP')
+    if any(ip_address(forwarded_for) not in ip_network(net) for net in networks):
+        print('!!! NOT from github IP:')
+        print_request(request)
+        return HttpResponseForbidden('Request not incoming from github hooks IP')
 
     # validate signature
     signature = request.META.get('HTTP_X_HUB_SIGNATURE')
     if signature is None:
         print('no signature')
     else:
+        print('signature')
         algo, signature = signature.split('=')
         if algo != 'sha1':
+            print('signature, but not sha1')
             return HttpResponseServerError('I only speak sha1.', status=501)
 
         mac = hmac.new(force_bytes(settings.GITHUB_WEBHOOK_KEY), msg=force_bytes(request.body), digestmod=sha1)
         if not hmac.compare_digest(force_bytes(mac.hexdigest()), force_bytes(signature)):
+            print(f'wrong signature: {mac.hexdigest()} != {signature}')
             return HttpResponseForbidden('wrong signature.')
+        else:
+            print('Good signature')
 
     # process event
     event = request.META.get('HTTP_X_GITHUB_EVENT', 'ping')
