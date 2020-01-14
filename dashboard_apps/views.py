@@ -1,5 +1,6 @@
 """Views for dashboard_apps."""
 import hmac
+import json
 from hashlib import sha1
 from ipaddress import ip_address, ip_network
 
@@ -37,7 +38,7 @@ def log(request: HttpRequest) -> HttpResponse:
 
 
 @csrf_exempt
-def webhook(request: HttpRequest) -> HttpResponse:
+def github_webhook(request: HttpRequest) -> HttpResponse:
     """
     Process request incoming from a github webhook.
 
@@ -70,12 +71,35 @@ def webhook(request: HttpRequest) -> HttpResponse:
             print_request(request)
             return HttpResponseForbidden('wrong signature.')
 
+    body = json.loads(request.body)
+
     # process event
     event = request.META.get('HTTP_X_GITHUB_EVENT', 'ping')
     if event == 'ping':
         print('pong')
     elif event == 'push':
         print('push event detected')
+        if body['ref'] == 'refs/heads/master':
+            print(' + on the master branch')
+        elif body['ref'] == 'refs/heads/devel':
+            print(' + on the devel branch')
+        else:
+            print(' + ref:', body['ref'])
+    elif event == 'pull_request':
+        print('pull request detected')
+        if body['action'] in ['opened', 'synchronize']:
+            print(' + opened / synchronized')
+            print(' - with number', body['number'])
+            print(' - on commit', body['pull_request']['head']['sha'])
+            print(' - from repo', body['pull_request']['head']['repo']['full_name'])
+            print(' - on ref', body['pull_request']['head']['ref'])
+            print(' - git url', body['pull_request']['head']['repo']['git_url'])
+            print(' - ssh url', body['pull_request']['head']['repo']['ssh_url'])
+            print(' - clone url', body['pull_request']['head']['repo']['clone_url'])
+    elif event == 'check_suite':
+        print('check suite detected')
+
+
     else:
         print(f'*** event: {event}')
 

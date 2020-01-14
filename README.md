@@ -10,4 +10,4 @@ https://docs.gitlab.com/ee/user/project/integrations/webhooks.html instead of po
 
 ## Status
 
-Ongoing…
+Ongoing...
