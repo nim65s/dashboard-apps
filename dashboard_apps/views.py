@@ -1,5 +1,6 @@
 """Views for dashboard_apps."""
 import hmac
+import json
 from hashlib import sha1
 from ipaddress import ip_address, ip_network
 
@@ -76,6 +77,11 @@ def webhook(request: HttpRequest) -> HttpResponse:
         print('pong')
     elif event == 'push':
         print('push event detected')
+        body = json.loads(request.body)
+        if body['ref'] == 'refs/head/master':
+            print(' on the master branch')
+        elif body['ref'] == 'refs/head/devel':
+            print(' on the devel branch')
     else:
         print(f'*** event: {event}')
 
