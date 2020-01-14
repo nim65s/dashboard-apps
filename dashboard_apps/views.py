@@ -46,7 +46,7 @@ def webhook(request: HttpRequest) -> HttpResponse:
     # validate ip source
     forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     networks = requests.get('https://api.github.com/meta').json()['hooks']
-    if any(ip_address(forwarded_for) not in ip_network(net) for net in networks):
+    if not any(ip_address(forwarded_for) in ip_network(net) for net in networks):
         print('!!! NOT from github IP:')
         print_request(request)
         return HttpResponseForbidden('Request not incoming from github hooks IP')
