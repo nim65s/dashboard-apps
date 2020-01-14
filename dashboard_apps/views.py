@@ -78,9 +78,9 @@ def webhook(request: HttpRequest) -> HttpResponse:
     elif event == 'push':
         print('push event detected')
         body = json.loads(request.body)
-        if body['ref'] == 'refs/head/master':
+        if body['ref'] == 'refs/heads/master':
             print(' + on the master branch')
-        elif body['ref'] == 'refs/head/devel':
+        elif body['ref'] == 'refs/heads/devel':
             print(' + on the devel branch')
         else:
             print(' + ref:', body['ref'])
