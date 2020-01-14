@@ -54,20 +54,21 @@ def webhook(request: HttpRequest) -> HttpResponse:
     # validate signature
     signature = request.META.get('HTTP_X_HUB_SIGNATURE')
     if signature is None:
-        print('no signature')
+        print('!!! request NOT signed:')
+        print_request(request)
+        return HttpResponseForbidden('Request without signature')
     else:
-        print('signature')
         algo, signature = signature.split('=')
         if algo != 'sha1':
-            print('signature, but not sha1')
+            print('!!! signature, but not sha1:')
+            print_request(request)
             return HttpResponseServerError('I only speak sha1.', status=501)
 
         mac = hmac.new(force_bytes(settings.GITHUB_WEBHOOK_KEY), msg=force_bytes(request.body), digestmod=sha1)
         if not hmac.compare_digest(force_bytes(mac.hexdigest()), force_bytes(signature)):
-            print(f'wrong signature: {mac.hexdigest()} != {signature}')
+            print(f'!!! wrong signature: {mac.hexdigest()} != {signature}')
+            print_request(request)
             return HttpResponseForbidden('wrong signature.')
-        else:
-            print('Good signature')
 
     # process event
     event = request.META.get('HTTP_X_GITHUB_EVENT', 'ping')
