@@ -87,8 +87,8 @@ def webhook(request: HttpRequest) -> HttpResponse:
             print(' + ref:', body['ref'])
     elif event == 'pull_request':
         print('pull request detected')
-        if body['action'] in ['opened']:
-            print(' + opened')
+        if body['action'] in ['opened', 'synchronize']:
+            print(' + opened / synchronized')
             print(' - with number', body['number'])
             print(' - on commit', body['pull_request']['head']['sha'])
             print(' - from repo', body['pull_request']['head']['repo']['full_name'])
