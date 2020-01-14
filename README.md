@@ -1,5 +1,7 @@
 # Dashboard Apps
 
+.
+
 github apps for https://github.com/gepetto/dashboard
 
 In other words, we need
