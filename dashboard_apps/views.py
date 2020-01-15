@@ -109,10 +109,23 @@ def github_webhook(request: HttpRequest) -> HttpResponse:
 def gitlab_webhook(request: HttpRequest) -> HttpResponse:
     """Process request incoming from a gitlab webhook."""
 
+    # validate ip source
     forwarded_for = ip_address(request.META.get('HTTP_X_FORWARDED_FOR'))
     if forwarded_for not in settings.GITLAB_IPS:
         print('!!! NOT from gitlab IP:')
         print_request(request)
         return HttpResponseForbidden('Request not incoming from gitlab IP')
+
+    # validate token
+    token = request.META.get('HTTP_X_GITLAB_TOKEN')
+    if token is None:
+        print('!!! NO token')
+        print_request(request)
+        return HttpResponseForbidden('Request without token')
+    if token != settings.GITLAB_WEBHOOK_KEY:
+        print('!!! WRONG token')
+        print_request(request)
+        return HttpResponseForbidden('Request with wrong token')
+
 
     return log(request)
