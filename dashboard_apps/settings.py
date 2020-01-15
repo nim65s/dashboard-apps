@@ -1,5 +1,6 @@
 """Project configuration."""
 import os
+from ipaddress import ip_address
 
 PROJECT = 'dashboard_apps'
 PROJECT_VERBOSE = PROJECT.replace('_', ' ').title()
@@ -151,3 +152,4 @@ with open(os.path.join(BASE_DIR, '.pem')) as pem:
     GITHUB_PRIVATE_KEY = pem.read()
 
 GITLAB_WEBHOOK_KEY = os.environ['GITLAB_WEBHOOK_KEY']
+GITLAB_IPS = (ip_address(ip) for ip in ('140.93.6.234', '2001:660:6602:4::6ea'))

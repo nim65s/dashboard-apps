@@ -15,6 +15,7 @@ import requests
 
 def print_request(request: HttpRequest):
     """Just print everything out."""
+    print('print_request')
     print(f'request = {request}')
     print(f'request.scheme = {request.scheme}')
     print(f'request.body = {request.body!s}')
@@ -107,5 +108,11 @@ def github_webhook(request: HttpRequest) -> HttpResponse:
 @csrf_exempt
 def gitlab_webhook(request: HttpRequest) -> HttpResponse:
     """Process request incoming from a gitlab webhook."""
+
+    forwarded_for = ip_address(request.META.get('HTTP_X_FORWARDED_FOR'))
+    if forwarded_for not in settings.GITLAB_IPS:
+        print('!!! NOT from gitlab IP:')
+        print_request(request)
+        return HttpResponseForbidden('Request not incoming from gitlab IP')
 
     return log(request)
