@@ -4,13 +4,12 @@ import json
 from hashlib import sha1
 from ipaddress import ip_address, ip_network
 
+import requests
 from django.conf import settings
 from django.http import HttpRequest
 from django.http.response import HttpResponse, HttpResponseForbidden, HttpResponseServerError
 from django.utils.encoding import force_bytes
 from django.views.decorators.csrf import csrf_exempt
-
-import requests
 
 
 def print_request(request: HttpRequest):

@@ -2,10 +2,9 @@
 from time import time
 from typing import Any, Dict
 
-from django.conf import settings
-
 import jwt
 import requests
+from django.conf import settings
 
 
 class Singleton(type):
